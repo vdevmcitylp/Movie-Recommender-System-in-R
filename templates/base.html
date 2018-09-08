@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<title> Movie Recommender </title>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<div class = "container">
+<body>
+
+	<h1 align = "center"> Movie Recommender </h1>
+	<br>
+
+
+	<!-- <form action = "{{ url_for('handle_data') }}" method="post" align = "center">
+		<div class = "form-group">
+			<input type = "text" placeholder = "Enter movie name" name = "movie_name"> <br> <br>
+			<input type = "submit">
+		</div>
+	</form> -->
+
+	<form action = "{{ url_for('handle_data') }}" method="post" align = "center">
+	    <div class = "form-group">
+	      <select class = "form-control" name = "movie_name">
+		      {% for mov in all_movies %}
+				<option>{{ mov }}</option>
+		      {% endfor %}
+	      </select>
+	      <br>
+	      <input type = "submit">
+	    </div>
+	</form>
+
+	<h3> Recommending based on <i> {{ movie_name }} </i> </h3>
+	{% for mov in movie_poster_list %}
+		<img src = "{{ mov }}"> &nbsp;
+	{% endfor %}
+	<br> <br>
+
+	<ol class = "list-group">
+	{% for mov in recommended_list %}
+		<li> <b> {{ mov }} </b> </li>
+	{% endfor %}
+	</ol>
+</body>
+</div>
+
+</html>
