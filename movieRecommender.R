@@ -1,26 +1,33 @@
+# Set working directory
 setwd("D:/R")
+
+# Reading in the dataset
 dataset = read.csv("input_data.csv", stringsAsFactors = F)
 
+# Assigning to temporary variable
 temp = dataset
 
+# Removing commas from votes
 temp$votes = as.numeric(gsub(",", "", temp$votes))
 
+# Removing columns that we won't be using
 temp$description = NULL
 temp$poster = NULL
-temp$release_date
 temp$release_date = NULL
 temp$storyline = NULL
 temp$gallery.0 = NULL
-
 temp$gallery.1 = NULL
 temp$gallery.2 = NULL
 temp$gallery.3 = NULL
 temp$gallery.4 = NULL
 
+# Removing 'min' from running time
 temp$running_time = as.numeric(gsub(" min", "", temp$running_time))
 
+# Replacing NA values with median
 temp$metascore[is.na(temp$metascore)] = median(temp$metascore, na.rm = T)
 
+# Generating director feature vector
 unique_director = unique(temp$director)
 unique_director = sort(unique_director)
 director_indices = sapply(temp$director, match, unique_director)
@@ -29,6 +36,7 @@ director_features = as.data.frame(t(director_features))
 rownames(director_features) = temp$title
 colnames(director_features) = unique_director
 
+# Generating stars' features
 stars = c(temp$stars.0, temp$stars.1, temp$stars.2)
 unique_stars = unique(stars)
 unique_stars = sort(unique_stars)
@@ -42,6 +50,7 @@ stars_features = as.data.frame(stars_features)
 colnames(stars_features) = unique_stars
 rownames(stars_features) = temp$title
 
+# Generating genre features
 genre = c(temp$genre.0, temp$genre.1, temp$genre.2)
 unique_genre = unique(genre)
 unique_genre = sort(unique_genre)
@@ -55,13 +64,18 @@ genre_features = as.data.frame(t(genre_features))
 colnames(genre_features) = unique_genre
 rownames(genre_features) = temp$title
 
+# Appending everything to generate movie vector
 movie_vector = as.data.frame(cbind(director_features, stars_features, genre_features, temp$rating, temp$votes, temp$metascore))
 movie_vector = movie_vector[-743]
 movie_vector = scale(movie_vector)
 
+# Calculate cosine distance between all movies
 cosine_values = cosine(t(movie_vector))
+
+# Calculate top 10
 top10 = t(apply(cosine_values, 1, function(x) order(-x)[1:11]))
 
+# Store recommendations in CSV file
 recos = rep('', 11)
 for(i in 1:250) { recos = rbind(recos, temp$title[top10[i, ]]) }
 write.csv(recos, file = "recos.csv")
