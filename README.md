@@ -1,2 +1,9 @@
-  # Movie-Recommender-System-in-R
-  A simple movie recommender system in R.
+# Movie-Recommender-System
+A simple movie recommender system.
+
+The backend algorithm is written in R and the frontend is written in Python with Flask.
+
+
+
+
+  
